@@ -46,8 +46,8 @@ def main():
 
     while True:
         greet_bot.get_updates(new_offset)
-
         last_update = greet_bot.get_last_update()
+        greet_bot.send_message(last_update['message']['chat']['id'], last_update)
 
         last_update_id = last_update['update_id']
         last_chat_text = last_update['message']['text']
