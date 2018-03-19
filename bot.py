@@ -82,7 +82,8 @@ def main():
 
         greet_bot.send_message(last_chat_id, "downloaded " + os.path.join(os.getcwd(), yt.title))
 
-        bot.send_audio(last_chat_id, audio=open(os.path.join(os.getcwd(), yt.title)))
+        bot.send_audio(last_chat_id, audio=open(os.path.join(os.getcwd(), yt.title + ".mp4")))
+
 
 
 if __name__ == '__main__':
