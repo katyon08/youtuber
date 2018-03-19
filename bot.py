@@ -4,6 +4,7 @@ import requests
 import datetime
 
 # import telegram
+import sys
 from pytube import YouTube, Playlist
 from pytube.exceptions import RegexMatchError
 import logging
@@ -57,12 +58,9 @@ now = datetime.datetime.now()
 
 
 def main():
-    new_offset = None
-    today = now.day
-    hour = now.hour
 
     while True:
-        greet_bot.get_updates(new_offset)
+        greet_bot.get_updates()
         last_update = greet_bot.get_last_update()
         last_update_id = last_update['update_id']
         last_chat_text = last_update['message']['text']
@@ -71,18 +69,23 @@ def main():
 
         greet_bot.send_message(last_chat_id, last_update)
 
-        link = "https://www.youtube.com/watch?v=rfOY8ePOs_0"
-        greet_bot.send_message(last_chat_id, "processing " + link)
+        link = last_chat_text
+        # "https://www.youtube.com/watch?v=rfOY8ePOs_0"
+        greet_bot.send_message(last_chat_id, "processing: " + link)
 
         yt = YouTube(link)
 
-        greet_bot.send_message(last_chat_id, "downloading " + yt.title)
+        greet_bot.send_message(last_chat_id, "downloading: " + yt.title)
 
         yt.streams.filter(only_audio=True, subtype='mp4').order_by('resolution').first().download(os.getcwd())
 
-        greet_bot.send_message(last_chat_id, "downloaded " + os.path.join(os.getcwd(), yt.title))
+        greet_bot.send_message(last_chat_id, "downloaded: " + os.path.join(os.getcwd(), yt.title))
 
-        bot.send_audio(last_chat_id, audio=open(os.path.join(os.getcwd(), yt.title + ".mp4")))
+        bot.send_document(last_chat_id, document=open(os.path.join(os.getcwd(), yt.title + ".mp4"), 'rb'))
+
+        greet_bot.send_message(last_chat_id, "sent: " + open(os.path.join(os.getcwd(), yt.title + ".mp4"), 'rb').name)
+
+
 
 
 
