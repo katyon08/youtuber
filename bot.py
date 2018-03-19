@@ -64,34 +64,25 @@ def main():
     while True:
         greet_bot.get_updates(new_offset)
         last_update = greet_bot.get_last_update()
-        greet_bot.send_message(last_update['message']['chat']['id'], last_update)
-
-        link = "https://www.youtube.com/watch?v=rfOY8ePOs_0"
-
-        yt = YouTube(link)
-        yt.streams.filter(only_audio=True, subtype='mp4').order_by('resolution').first().download(os.getcwd())
-
-        greet_bot.send_message(last_update['message']['chat']['id'], yt.title)
-        bot.send_audio(last_update['message']['chat']['id'], audio=open(os.path.join(os.getcwd(), yt.title)))
-
         last_update_id = last_update['update_id']
         last_chat_text = last_update['message']['text']
         last_chat_id = last_update['message']['chat']['id']
         last_chat_name = last_update['message']['chat']['first_name']
 
-        if last_chat_text.lower() in greetings and today == now.day and 6 <= hour < 12:
-            greet_bot.send_message(last_chat_id, u'Доброе утро, {}'.format(last_chat_name))
-            today += 1
+        greet_bot.send_message(last_chat_id, last_update)
 
-        elif last_chat_text.lower() in greetings and today == now.day and 12 <= hour < 17:
-            greet_bot.send_message(last_chat_id, u'Добрый день, {}'.format(last_chat_name))
-            today += 1
+        link = "https://www.youtube.com/watch?v=rfOY8ePOs_0"
+        greet_bot.send_message(last_chat_id, "processing " + link)
 
-        elif last_chat_text.lower() in greetings and today == now.day and 17 <= hour < 23:
-            greet_bot.send_message(last_chat_id, u'Добрый вечер, {}'.format(last_chat_name))
-            today += 1
+        yt = YouTube(link)
 
-        new_offset = last_update_id + 1
+        greet_bot.send_message(last_chat_id, "downloading " + yt.title)
+
+        yt.streams.filter(only_audio=True, subtype='mp4').order_by('resolution').first().download(os.getcwd())
+
+        greet_bot.send_message(last_chat_id, "downloaded " + os.path.join(os.getcwd(), yt.title))
+
+        bot.send_audio(last_chat_id, audio=open(os.path.join(os.getcwd(), yt.title)))
 
 
 if __name__ == '__main__':
