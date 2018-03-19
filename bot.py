@@ -72,7 +72,7 @@ def main():
         yt.streams.filter(only_audio=True, subtype='mp4').order_by('resolution').first().download(os.getcwd())
 
         greet_bot.send_message(last_update['message']['chat']['id'], yt.title)
-        bot.send_audio(last_update['message']['chat']['id'], os.path.join(os.getcwd(), yt.title))
+        bot.send_audio(last_update['message']['chat']['id'], audio=open(os.path.join(os.getcwd(), yt.title)))
 
         last_update_id = last_update['update_id']
         last_chat_text = last_update['message']['text']
