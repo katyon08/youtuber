@@ -33,12 +33,12 @@ class BotHandler:
         resp = requests.post(self.api_url + method, params)
         return resp
 
-    def send_audio(self, chat_id, text):
-        bot.send_audio(chat_id,)
-        params = {'chat_id': chat_id, 'text': text}
-        method = 'sendMessage'
-        resp = requests.post(self.api_url + method, params)
-        return resp
+    def send_audio(self, chat_id, audiofile):
+        return bot.send_audio(chat_id, audio=open(audiofile, 'rb'))
+        # params = {'chat_id': chat_id, 'text': text}
+        # method = 'sendMessage'
+        # resp = requests.post(self.api_url + method, params)
+        # return resp
 
     def get_last_update(self):
         get_result = self.get_updates()
@@ -72,6 +72,7 @@ def main():
         yt.streams.filter(only_audio=True, subtype='mp4').order_by('resolution').first().download(os.getcwd())
 
         greet_bot.send_message(last_update['message']['chat']['id'], yt.title)
+        bot.send_audio(last_update['message']['chat']['id'], os.path.join(os.getcwd(), yt.title))
 
         last_update_id = last_update['update_id']
         last_chat_text = last_update['message']['text']
